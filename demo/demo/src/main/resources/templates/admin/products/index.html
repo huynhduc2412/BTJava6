@@ -13,22 +13,31 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <!--            <th scope="col">Image</th>-->
-            <th scope="col">Price</th>
-            <th scope="col">Category</th>
-            <th scope="col"></th>
+            <th>id</th>
+            <th>Name</th>
+            <th>description</th>
+            <th>Image</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="product : ${listproduct}">
             <th scope="row" th:text="${product.id}"></th>
             <td th:text="${product.name}"></td>
-            <!-- <td th:text="${product.image}"></td> -->
-            <!--            <td>-->
-            <!--                <img height="120" width="150" th:src="@{/images/} + ${product.image}"/>-->
-            <!--            </td>-->
+            <td th:text="${product.description}"></td>
+
+            <td style="width: 250px; display: flex; justify-content: center;">
+                <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-interval="50">
+                    <div class="carousel-inner">
+                        <div th:each="image, iterStat : ${product.productImages}" class="carousel-item"
+                             th:classappend="${iterStat.index == 0} ? ' active'">
+                            <img th:src="@{${image.photo}}" class="d-block" alt="Product image" height="100px">
+                        </div>
+                    </div>
+                </div>
+            </td>
             <td th:text="${product.price}"></td>
             <td th:text="${product.category.name}"></td>
             <td>

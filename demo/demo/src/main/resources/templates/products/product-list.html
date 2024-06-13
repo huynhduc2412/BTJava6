@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
-      xmlns:custom="http://www.w3.org/1999/xhtml"
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:custom="http://www.w3.org/1999/xhtml"
       layout:decorate="~{layout}">
 <head>
     <title th:text="${title} ?: 'Product'">Product</title>
@@ -10,33 +9,38 @@
 <body>
 <section layout:fragment="content">
     <h1>Products List</h1>
-    <!--    <div>-->
-    <!--        <a th:href="@{/products/add}" class="btn btn-primary mb-3">Add New Product</a>-->
-    <!--    </div>-->
+    <div>
+        <a th:href="@{/products/add}" class="btn btn-primary mb-3">Add New Product</a>
+    </div>
     <table class="table table-bordered table-hover">
         <thead class="table-dark">
         <tr>
             <th>ID</th>
-            <!--            <th>Photo</th>-->
-            <th>Name</th>
+            <th>Photo</th>
+            <th>Name</th>za
             <th>Price</th>
-            <!--            <th>Description</th>-->
+            <th>Description</th>
             <th>Category Name</th>
             <th>Actions</th>
-            <!--            <th>Add To Cart</th>-->
+            <th>Add To Cart</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="product : ${products}">
             <td th:text="${product.id}"></td>
-            <!--            <td>-->
-            <!--                <div th:each="image : ${product.productImages}">-->
-            <!--                    <img th:src="@{${image.photo}}" alt="Product image" height="100px"/>-->
-            <!--                </div>-->
-            <!--            </td>-->
+            <td style="width: 250px; display: flex; justify-content: center;">
+                <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-interval="50">
+                    <div class="carousel-inner">
+                        <div th:each="image, iterStat : ${product.productImages}" class="carousel-item"
+                             th:classappend="${iterStat.index == 0} ? ' active'">
+                            <img th:src="@{${image.photo}}" class="d-block" alt="Product image" height="100px">
+                        </div>
+                    </div>
+                </div>
+            </td>
             <td th:text="${product.name}"></td>
             <td th:text="${product.price}"></td>
-            <!--            <td th:text="${product.description}"></td>-->
+            <td th:text="${product.description}"></td>
             <td th:text="${product.category.name}"></td>
             <td>
                 <span sec:authorize="hasAnyAuthority('SALES', 'USER')">
@@ -44,26 +48,18 @@
                        class="btn btn-secondary">Edit</a>
                 </span>
             </td>
-            <!--            <td>-->
-            <!--                <form th:action="@{/cart/add}" method="post">-->
-            <!--                    <input type="number" name="quantity" min="1" value="1"-->
-            <!--                           class="form-control d-inline-block"-->
-            <!--                           style="width: 70px"/>-->
-            <!--                    <input type="hidden" th:value="${product.id}" name="productId"/>-->
-            <!--                    <button type="submit" class="btn btn-warning btn-sm">Add to Cart</button>-->
-            <!--                </form>-->
-            <!--            </td>-->
+            <td>
+                <form th:action="@{/cart/add}" method="post">
+                    <input type="number" name="quantity" min="1" value="1" class="form-control d-inline-block"
+                           style="width: 70px"/>
+                    <input type="hidden" th:value="${product.id}" name="productId"/>
+                    <button type="submit" class="btn btn-warning btn-sm">Add to Cart</button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>
 </section>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-<script>
-    function checkQuantity(input, maxQuantity) {
-        if (input.value > maxQuantity) {
-            input.value = maxQuantity;
-        }
-    }
-</script>
 </body>
 </html>

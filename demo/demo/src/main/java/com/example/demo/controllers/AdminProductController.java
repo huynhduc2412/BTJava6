@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.models.Product;
+import com.example.demo.models.ProductImages;
 import com.example.demo.services.CategoryService;
 import com.example.demo.services.ProductService;
 
@@ -9,11 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,7 +31,7 @@ public class AdminProductController {
     @Autowired
     private CategoryService categoryService;
 
-    @GetMapping("")
+    @GetMapping
     public String index(Model model) {
         model.addAttribute("listproduct", productService.getAllProducts());
         return "admin/products/index.html";
@@ -42,25 +45,28 @@ public class AdminProductController {
     }
 
     @PostMapping("/create")
-    public String create(@Valid Product newProduct, BindingResult result, Model model) {
+    public String create(@Valid Product product, BindingResult result, @RequestParam("imageList") MultipartFile[] images) {
         if (result.hasErrors()) {
-            model.addAttribute("product", newProduct);
-            model.addAttribute("listCategory", categoryService.getAllCategories());
-            return "admin/products/create";
+            return "products/add-product";
         }
-//        if (imageProduct != null && imageProduct.getSize() > 0) {
-//            try {
-//                File saveFile = new ClassPathResource("static/images").getFile();
-//                String newImageFile = UUID.randomUUID() + ".png";
-//                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + newImageFile);
-//                Files.copy(imageProduct.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-//                newProduct.setImage(newImageFile);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-        productService.addProduct(newProduct);
-        return "redirect:/admin/products";
+
+        for (MultipartFile image : images) {
+            if (!image.isEmpty()) {
+                try {
+                    String imageUrl = saveImageStatic(image);
+                    ProductImages productImage = new ProductImages();
+                    productImage.setPhoto("/images/" + imageUrl);
+                    productImage.setProduct(product); // Set the product reference
+                    product.getProductImages().add(productImage); // Add the image to the product
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    // Optionally add error handling for individual image failures
+                }
+            }
+        }
+
+        productService.addProduct(product);
+        return "redirect:/products";
     }
 
     @GetMapping("/edit/{id}")
@@ -95,5 +101,12 @@ public class AdminProductController {
     public String deleteProduct(@PathVariable Long id) {
         productService.deleteProductById(id);
         return "redirect:/admin/products";
+    }
+    private String saveImageStatic(MultipartFile image) throws IOException {
+        File saveFile = new ClassPathResource("static/images").getFile();
+        String fileName = UUID.randomUUID() + "." + StringUtils.getFilenameExtension(image.getOriginalFilename());
+        Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + fileName);
+        Files.copy(image.getInputStream(), path);
+        return fileName;
     }
 }

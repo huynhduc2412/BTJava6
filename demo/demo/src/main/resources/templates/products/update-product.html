@@ -31,25 +31,25 @@
                         th:selected="${category.id == product.category.id}"></option>
             </select>
         </div>
-        <!--        <div class="mb-3">-->
-        <!--            <label for="description" class="form-label">Description:</label>-->
-        <!--            <textarea th:field="*{description}" class="form-control" id="description" required></textarea>-->
-        <!--        </div>-->
-        <!--        <div class="mb-3">-->
-        <!--            <label for="images" class="form-label">Product Images:</label>-->
-        <!--            <div class="d-flex flex-wrap">-->
-        <!--                <div th:each="image, iterStat : ${product.productImages}" class="m-2">-->
-        <!--                    <img th:src="@{${image.photo}}" alt="Product image" class="img-thumbnail"-->
-        <!--                         style="width: 150px; height: auto;">-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--        </div>-->
-        <!--        <div class="mb-3">-->
-        <!--            &lt;!&ndash;					<label for="image" class="form-label">Product Image:</label>&ndash;&gt;-->
-        <!--            &lt;!&ndash;					<input type="file" id="image" name="image" class="form-control"/>&ndash;&gt;-->
-        <!--            <label class="form-label" for="images">Chọn Ảnh: </label>-->
-        <!--            <input type="file" id="images" name="imageList" multiple accept="image/*"/>-->
-        <!--        </div>-->
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <textarea th:field="*{description}" class="form-control" id="description" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="images" class="form-label">Product Images:</label>
+                    <div class="d-flex flex-wrap">
+                        <div th:each="image, iterStat : ${product.productImages}" class="m-2">
+                            <img th:src="@{${image.photo}}" alt="Product image" class="img-thumbnail"
+                                 style="width: 150px; height: auto;">
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <!--					<label for="image" class="form-label">Product Image:</label>-->
+                    <!--					<input type="file" id="image" name="image" class="form-control"/>-->
+                    <label class="form-label" for="images">Chọn Ảnh: </label>
+                    <input type="file" id="images" name="imageList" multiple accept="image/*"/>
+                </div>
         <button type="submit" class="btn btn-primary">Save Changes</button>
         <a th:href="@{/products}" class="btn btn-link">Cancel</a>
     </form>
